@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Scrolling Sections</title>
+  <title>Mortgage</title>
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
   <style type="text/css">
@@ -43,6 +43,12 @@
     <p>
       You can afford <span id="loanMax"> ? </span>
     </p>
+
+    <p>
+      Your monthly mortgage will be around <span id="monthlyMortgage"> ? </span>
+    </p>
+
+    <p id="bar"></p>
   </div>
 
   <div id="monthly_payment">
@@ -57,52 +63,6 @@
   </div>
 
   <script type="text/javascript">
-    function monthlyPaymentCalculator() {
-      var l = Number(document.getElementById('loan').value);
-      var r = Number(document.getElementById('rate').value);
-      var i = r/12;
-      var a = Math.pow(1+i,360);
-      var m = l * ((i * a)/(a - 1))
-      var income = m * 2;
-      console.log(typeof l);
-      console.log(l);
-      console.log(typeof r);
-      console.log(a);
-      console.log(m);
-      document.getElementById('monthlyPayment').innerHTML= m;
-    }
-
-    var w = 500;
-    var h = 100;
-    var barPadding = 1;
-
-    var dataset = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
-        11, 12, 15, 20, 18, 17, 16, 18, 23, 25 ];
-    // Create SVG element 
-    var svg = d3.select("body")
-                .append("svg")
-                .attr("width",w)
-                .attr("height",h);
-    svg.selectAll("rect")
-       .data(dataset)
-       .enter()
-       .append("rect")
-       .attr("x",function(d,i) {
-            return i * (w/dataset.length);
-       })
-       .attr("y",function(d) {
-            return h - (d * 4);
-       })
-       .attr("width", w / dataset.length - barPadding)
-       .attr("height", function(d) {
-            return d * 4;
-       })
-       .attr("fill",function(d) {
-            return "rgb(0,0," + (d*10)+")";
-       });
-
-
-
     function loanCalculator(){
       var income = Number(document.getElementById('income').value);
       var debt = Number(document.getElementById('debt').value);
@@ -113,7 +73,41 @@
       var l = (income - debt) * (a - 1)/(2 * i * a);
       var p = l + dp;
       var total = dp + (income - debt) * (a - 1)/(2 * i * a);
+      var m = l * ((i * a)/(a - 1))
       document.getElementById('loanMax').innerHTML= "$" + p.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + " property, with $" + l.toFixed(2) + " loan.";
+      document.getElementById('monthlyMortgage').innerHTML = "$" + m.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+      drawBarChart();
+    }
+
+    function drawBarChart() {
+      var w = 500;
+      var h = 100;
+      var barPadding = 1;
+
+      var dataset = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
+                11, 12, 15, 20, 18, 17, 16, 18, 23, 25 ];
+      // Create SVG element 
+      var svg = d3.select("#bar")
+                  .append("svg")
+                  .attr("width",w)
+                  .attr("height",h);
+      svg.selectAll("rect")
+         .data(dataset)
+         .enter()
+         .append("rect")
+         .attr("x",function(d,i) {
+              return i * (w/dataset.length);
+         })
+         .attr("y",function(d) {
+              return h - (d * 4);
+         })
+         .attr("width", w / dataset.length - barPadding)
+         .attr("height", function(d) {
+              return d * 4;
+         })
+         .attr("fill",function(d) {
+              return "rgb(0,0," + (d*10)+")";
+         });
     }
   </script>
 </body>
