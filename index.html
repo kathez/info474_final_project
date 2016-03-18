@@ -5,15 +5,18 @@
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
   <style type="text/css">
+    body {
+      margin: 5em;
+    }
     label{
-    display: inline-block;
-    float: left;
-    clear: left;
-    width: 120px;
-    text-align: left;
-    margin-left: 1em;
-    margin-right: 1em;
-    margin-bottom: 1em;
+      display: inline-block;
+      float: left;
+      clear: left;
+      width: 120px;
+      text-align: left;
+      margin-left: 1em;
+      margin-right: 1em;
+      margin-bottom: 1em;
     }
     input {
       display: inline-block;
@@ -29,6 +32,11 @@
       clear: both;
       margin-left: 1em
     }
+
+    #chart {
+      margin-left: 14pm;
+    }
+
   </style>
 </head>
 <body>
@@ -51,12 +59,9 @@
     <p> 
       After 360 months (30 years fix termed), you end up paying <span id="totalPayment"> ? </span>. 
     </p>
-
-    <div id="chart"></div>
   </div>
+  <div id="chart"></div>
 
-  
-  </div>
 
   <script type="text/javascript">
     function loanCalculator(){
@@ -120,7 +125,6 @@
           return data[i].label;}
               );
     }
-
   </script>
 </body>
 </html>
