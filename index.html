@@ -48,18 +48,14 @@
       Your monthly mortgage will be around <span id="monthlyMortgage"> ? </span>
     </p>
 
-    <p id="bar"></p>
+    <p> 
+      After 360 months (30 years fix termed), you end up paying <span id="totalPayment"> ? </span>. 
+    </p>
+
+    <div id="chart"></div>
   </div>
 
-  <div id="monthly_payment">
-    <h2>How much will I pay monthly as my mortgage payment?</h2>
-    <label>Loan </label><input type="text" name="loan" id="loan" />
-    <label>Interest Rate </label><input type="text" name="interest_rate" id="rate" />
-    <button onclick="monthlyPaymentCalculator()">Submit</button>
-    
-    <p>
-      You will pay around <span id="monthlyPayment"> ? </span>
-    </p>
+  
   </div>
 
   <script type="text/javascript">
@@ -72,43 +68,59 @@
       var a = Math.pow(1+i,360);
       var l = (income - debt) * (a - 1)/(2 * i * a);
       var p = l + dp;
-      var total = dp + (income - debt) * (a - 1)/(2 * i * a);
-      var m = l * ((i * a)/(a - 1))
+      var m = l * ((i * a)/(a - 1));
+      var total = dp + m*360;
+      var interest = total - p;
+      console.log(total);
       document.getElementById('loanMax').innerHTML= "$" + p.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + " property, with $" + l.toFixed(2) + " loan.";
       document.getElementById('monthlyMortgage').innerHTML = "$" + m.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-      drawBarChart();
+      document.getElementById('totalPayment').innerHTML = "$" + total.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"); 
+      drawPieChart(dp, l, interest);     
     }
 
-    function drawBarChart() {
-      var w = 500;
-      var h = 100;
-      var barPadding = 1;
+    function drawPieChart(dp,l,interest) {
+      // Initialize data 
+      var d = dp;
+      var l = l;
+      var i = interest; 
 
-      var dataset = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
-                11, 12, 15, 20, 18, 17, 16, 18, 23, 25 ];
-      // Create SVG element 
-      var svg = d3.select("#bar")
-                  .append("svg")
-                  .attr("width",w)
-                  .attr("height",h);
-      svg.selectAll("rect")
-         .data(dataset)
-         .enter()
-         .append("rect")
-         .attr("x",function(d,i) {
-              return i * (w/dataset.length);
-         })
-         .attr("y",function(d) {
-              return h - (d * 4);
-         })
-         .attr("width", w / dataset.length - barPadding)
-         .attr("height", function(d) {
-              return d * 4;
-         })
-         .attr("fill",function(d) {
-              return "rgb(0,0," + (d*10)+")";
-         });
+      var w = 400;
+      var h = 400;
+      var r = h/2;
+      var color = d3.scale.category20c();
+
+      var data = [{"label":"Down Payment", "value":d}, 
+                        {"label":"Loan", "value":l}, 
+                        {"label":"Interest", "value":i}];    
+
+
+      var vis = d3.select('#chart').append("svg:svg").data([data]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
+      var pie = d3.layout.pie().value(function(d){return d.value;});
+
+      // declare an arc generator function
+      var arc = d3.svg.arc().outerRadius(r);
+
+      // select paths, use arc generator to draw
+      var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+      arcs.append("svg:path")
+          .attr("fill", function(d, i){
+              return color(i);
+          })
+          .attr("d", function (d) {
+              // log the result of the arc generator to show how cool it is :)
+              console.log(arc(d));
+              return arc(d);
+          });
+
+      // add the text
+      arcs.append("svg:text").attr("transform", function(d){
+                  d.innerRadius = 0;
+                  d.outerRadius = r;
+          return "translate(" + arc.centroid(d) + ")";}).attr("text-anchor", "middle").text( function(d, i) {
+          return data[i].label;}
+              );
     }
+
   </script>
 </body>
 </html>
