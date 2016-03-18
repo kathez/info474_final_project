@@ -2,65 +2,119 @@
 <html>
 <head>
   <title>Scrolling Sections</title>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
-  <link rel="stylesheet" type="text/css" href="css/style.css"/>
+  <style type="text/css">
+    label{
+    display: inline-block;
+    float: left;
+    clear: left;
+    width: 120px;
+    text-align: left;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    }
+    input {
+      display: inline-block;
+      float: left;
+    }
+
+    h2, p {
+      clear: both;
+      margin: 14px;
+    }
+
+    button {
+      clear: both;
+      margin-left: 1em
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-  <div id='graphic'>
-    <div id='sections'>
-      <section class="step">
-        <div class="title">House Price Target</div>
-        House price target is made up of two parts: down payment and loan amount.
-        <h3>Down Payment</h3>
-        <p>This is the amount of money you will put towards a down payment on the house. Make sure you still have cash left over after the down payment to cover unexpected repairs or financial emergencies.</p>
-        <h3>Loan Amount</h3>
-        <p>It is calculated based on the amount of money you can bear as a monthly mortgage payment. This webpage will explain the key components one by one, and help you understand what determins that loan amount you can get. </p>
-      </section>
-      <section class="step">
-        <div class="title">Interest Rate</div>
-        This is the interest rate for the loan you will receive. It is pre-filled with the current 30-yr fixed average rate on Zillow Mortgages. 
-      </section>
-      <section class="step">
-        <div class="title">Principal</div>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </section>
-      <section class="step">
-        <div class="title">Property Tax</div>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </section>
-      <section class="step">
-        <div class="title">HOA</div>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </section>
-      
-    </div>
-    <div id='vis'>
-    </div>
-    <div id="extra-space">
-    </div>
+  <div id="loan_calculator">
+    <h2>How much loan I can get to buy a house?</h2>
+    <label>Income </label><input type="text" name="income" id="income" /> 
+    <label>Debt </label><input type="text" name="Debt" id="debt" />
+    <label>Interest Rate </label><input type="text" name="interest_rate" id="interest_rate" />
+    <label>Down Payment </label><input type="text" name="downpayment" id="downpayment" />
+    <button type = "submit" onclick="loanCalculator()">Submit</button>
+
+    <p>
+      You can afford <span id="loanMax"> ? </span>
+    </p>
   </div>
-</div>
+
+  <div id="monthly_payment">
+    <h2>How much will I pay monthly as my mortgage payment?</h2>
+    <label>Loan </label><input type="text" name="loan" id="loan" />
+    <label>Interest Rate </label><input type="text" name="interest_rate" id="rate" />
+    <button onclick="monthlyPaymentCalculator()">Submit</button>
+    
+    <p>
+      You will pay around <span id="monthlyPayment"> ? </span>
+    </p>
+  </div>
+
+  <script type="text/javascript">
+    function monthlyPaymentCalculator() {
+      var l = Number(document.getElementById('loan').value);
+      var r = Number(document.getElementById('rate').value);
+      var i = r/12;
+      var a = Math.pow(1+i,360);
+      var m = l * ((i * a)/(a - 1))
+      var income = m * 2;
+      console.log(typeof l);
+      console.log(l);
+      console.log(typeof r);
+      console.log(a);
+      console.log(m);
+      document.getElementById('monthlyPayment').innerHTML= m;
+    }
+
+    var w = 500;
+    var h = 100;
+    var barPadding = 1;
+
+    var dataset = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
+        11, 12, 15, 20, 18, 17, 16, 18, 23, 25 ];
+    // Create SVG element 
+    var svg = d3.select("body")
+                .append("svg")
+                .attr("width",w)
+                .attr("height",h);
+    svg.selectAll("rect")
+       .data(dataset)
+       .enter()
+       .append("rect")
+       .attr("x",function(d,i) {
+            return i * (w/dataset.length);
+       })
+       .attr("y",function(d) {
+            return h - (d * 4);
+       })
+       .attr("width", w / dataset.length - barPadding)
+       .attr("height", function(d) {
+            return d * 4;
+       })
+       .attr("fill",function(d) {
+            return "rgb(0,0," + (d*10)+")";
+       });
 
 
-<script src="js/d3.js"></script>
-<script src="js/queue.js"></script>
-<script src="js/scroller.js"></script>
-<script src="js/sections.js"></script>
+
+    function loanCalculator(){
+      var income = Number(document.getElementById('income').value);
+      var debt = Number(document.getElementById('debt').value);
+      var r = Number(document.getElementById('interest_rate').value);
+      var dp = Number(document.getElementById('downpayment').value);
+      var i = r/12;
+      var a = Math.pow(1+i,360);
+      var l = (income - debt) * (a - 1)/(2 * i * a);
+      var p = l + dp;
+      var total = dp + (income - debt) * (a - 1)/(2 * i * a);
+      document.getElementById('loanMax').innerHTML= "$" + p.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + " property, with $" + l.toFixed(2) + " loan.";
+    }
+  </script>
 </body>
 </html>
