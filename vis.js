@@ -10,19 +10,23 @@ function loanCalculator(){
       var m = l * ((i * a)/(a - 1));
       var total = dp + m*360;
       var interest = total - p;
+      var tax = p * 0.0101 * 30;
       console.log(typeof r);
       console.log(i);
+      console.log(tax);
       document.getElementById('loanMax').innerHTML= "$" + p.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + " property, with $" + l.toFixed(2) + " loan.";
       document.getElementById('monthlyMortgage').innerHTML = "$" + m.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
       document.getElementById('totalPayment').innerHTML = "$" + total.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"); 
-      drawPieChart(dp, l, interest);     
+      document.getElementById('propertyTax').innerHTML = "$" + tax.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+      drawPieChart(dp, l, interest,tax);     
     }
 
-    function drawPieChart(dp,l,interest) {
+    function drawPieChart(dp,l,interest,tax) {
       // Initialize data 
       var d = dp;
       var l = l;
-      var i = interest; 
+      var i = interest;
+      var t = tax; 
 
       var w = 400;
       var h = 400;
@@ -31,7 +35,8 @@ function loanCalculator(){
 
       var data = [{"label":"Down Payment", "value":d}, 
                         {"label":"Loan", "value":l}, 
-                        {"label":"Interest", "value":i}];    
+                        {"label":"Interest", "value":i},
+                        {"label":"Property Tax","value":t}];    
 
 
       var vis = d3.select('#chart').append("svg:svg").data([data]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
@@ -80,6 +85,7 @@ function roiCalculator(){
       var payment = m*s*12;
       var netgain = fp - rl - dp - payment;
       var monthlyGain = netgain/(s*12);
+      var rent = -(p - rl - dp - payment)/(s*12);
       console.log(r);
       console.log(s);
       console.log(g);
@@ -92,7 +98,10 @@ function roiCalculator(){
       console.log(fp);
       console.log(payment);
       console.log(rl);
-      document.getElementById('gain').innerHTML= "$" + netgain.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+      console.log(rent);
+      document.getElementById('gain').innerHTML = "$" + netgain.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
       document.getElementById('monthlyROI').innerHTML = "$" + monthlyGain.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-      document.getElementById('lengthStay').innerHTML = s;     
+      document.getElementById('lengthStay').innerHTML = s; 
+      document.getElementById('rent').innerHTML = "$" + rent.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+      document.getElementById('rental_length').innerHTML = s;    
     }
