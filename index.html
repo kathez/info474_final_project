@@ -6,6 +6,11 @@
   <link rel="stylesheet" type="text/css" href="main.css"/>
 </head>
 <body>
+  <div id="tooltip" class="hidden">
+    <p><span id="value">100</span>
+    </p>
+  </div>
+
   <div id="loan_calculator">
     <h2>How much loan I can get to buy a house?</h2>
     <label>Income </label><input type="text" name="income" id="income" /> 
@@ -38,12 +43,13 @@
     <button type = "submit" onclick="roiCalculator()">Submit</button>
 
     <p>
-      You will gain <span id="gain">____</span> total, and <span id="monthlyROI">_____</span> every month, if you sell it after <span id="lengthStay">_____</span> years 
+      You will gain <span id="gain">____</span> total, which is <span id="monthlyROI">_____</span> every month, if you sell it after <span id="lengthStay">_____</span> years 
     </p>
 
     <p> 
       Even if your property doesn't increase in value at all, it is as if you are paying <span id="rent">_____</span> rent every month for <span id="rental_length">____</span> years 
     </p>
+
   </div>
 
   <script type="text/javascript" src="vis.js"></script>

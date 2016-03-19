@@ -5,128 +5,232 @@
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
   <style type="text/css">
-    label{
-    display: inline-block;
-    float: left;
-    clear: left;
-    width: 120px;
-    text-align: left;
-    margin-left: 1em;
-    margin-right: 1em;
-    margin-bottom: 1em;
-    }
-    input {
-      display: inline-block;
-      float: left;
-    }
-
-    h2, p {
-      clear: both;
-      margin: 14px;
-    }
-
-    button {
-      clear: both;
-      margin-left: 1em
-    }
+    .axis path, .axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+}
+#tooltip {
+    position: absolute;
+    text-align: center;
+    width: 40px;
+    height: auto;
+    padding: 10px;
+    background-color: white;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+#tooltip.hidden {
+    display: none;
+}
+#tooltip p {
+    margin: 0;
+    font-family: sans-serif;
+    font-size: 16px;
+    line-height: 20px;
+}
   </style>
 </head>
 <body>
-  <div id="loan_calculator">
-    <h2>How much loan I can get to buy a house?</h2>
-    <label>Income </label><input type="text" name="income" id="income" /> 
-    <label>Debt </label><input type="text" name="Debt" id="debt" />
-    <label>Interest Rate </label><input type="text" name="interest_rate" id="interest_rate" />
-    <label>Down Payment </label><input type="text" name="downpayment" id="downpayment" />
-    <button type = "submit" onclick="loanCalculator()">Submit</button>
-
-    <p>
-      You can afford <span id="loanMax"> ? </span>
-    </p>
-
-    <p>
-      Your monthly mortgage will be around <span id="monthlyMortgage"> ? </span>
-    </p>
-
-    <p> 
-      After 360 months (30 years fix termed), you end up paying $ <span id="totalPayment"> ? </span>. 
-    <p id="chart"></p>
-  </div>
-
-  <div id="monthly_payment">
-    <h2>How much will I pay monthly as my mortgage payment?</h2>
-    <label>Loan </label><input type="text" name="loan" id="loan" />
-    <label>Interest Rate </label><input type="text" name="interest_rate" id="rate" />
-    <button onclick="monthlyPaymentCalculator()">Submit</button>
-    
-    <p>
-      You will pay around <span id="monthlyPayment"> ? </span>
-    </p>
+  <div id="tooltip" class="hidden">
+    <p><span id="value">100</span>
     </p>
   </div>
 
   <script type="text/javascript">
-    function loanCalculator(){
-      var income = Number(document.getElementById('income').value);
-      var debt = Number(document.getElementById('debt').value);
-      var r = Number(document.getElementById('interest_rate').value);
-      var dp = Number(document.getElementById('downpayment').value);
-      var i = r/12;
-      var a = Math.pow(1+i,360);
-      var l = (income - debt) * (a - 1)/(2 * i * a);
-      var p = l + dp;
-      var m = l * ((i * a)/(a - 1));
-      var total = dp + m*360;
-      var interest = total - p;
-      console.log(total);
-      document.getElementById('loanMax').innerHTML= "$" + p.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + " property, with $" + l.toFixed(2) + " loan.";
-      document.getElementById('monthlyMortgage').innerHTML = "$" + m.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-      document.getElementById('totalPayment').innerHTML = "$" + total.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"); 
-      drawPieChart(dp, l, interest);     
+    var margins = {
+    top: 12,
+    left: 75,
+    right: 24,
+    bottom: 24
+},
+legendPanel = {
+    width: 180
+},
+width = 800 - margins.left - margins.right - legendPanel.width,
+    height = 100 - margins.top - margins.bottom,
+    dataset = [{
+        data: [{
+            month: 'Payment',
+            count: 118000
+        }, {
+            month: 'Future Value',
+            count: 118000
+        }],
+        name: 'Down Payment'
+    }, {
+        data: [{
+            month: 'Payment',
+            count: 472000
+        }, {
+            month: 'Future Value',
+            count: 472000,
+        }],
+        name: 'Loan'
+    }, {
+        data: [{
+            month: 'Payment',
+            count: 0
+        }, {
+            month: 'Future Value',
+            count: 466000
+        }],
+        name: 'Equity'
+    }, {
+        data: [{
+            month: 'Payment',
+            count: 175929
+        }, {
+            month: 'Future Value',
+            count: 0,
+        }],
+        name: 'Interest'
+    }, {
+        data: [{
+            month: 'Payment',
+            count: 59590
+        }, {
+            month: 'Future Value',
+            count: 0,
+        }],
+        name: 'Tax'
     }
 
-    function drawPieChart(dp,l,interest) {
-      // Initialize data 
-      var d = dp;
-      var l = l;
-      var i = interest; 
+    ],
+    series = dataset.map(function (d) {
+        return d.name;
+    }),
+    dataset = dataset.map(function (d) {
+        return d.data.map(function (o, i) {
+            // Structure it so that your numeric
+            // axis (the stacked amount) is y
+            return {
+                y: o.count,
+                x: o.month
+            };
+        });
+    }),
+    stack = d3.layout.stack();
 
-      var w = 400;
-      var h = 400;
-      var r = h/2;
-      var color = d3.scale.category20c();
+stack(dataset);
 
-      var data = [{"label":"Down Payment", "value":d}, 
-                        {"label":"Loan", "value":l}, 
-                        {"label":"Interest", "value":i}];    
+var dataset = dataset.map(function (group) {
+    return group.map(function (d) {
+        // Invert the x and y values, and y0 becomes x0
+        return {
+            x: d.y,
+            y: d.x,
+            x0: d.y0
+        };
+    });
+}),
+    svg = d3.select('body')
+        .append('svg')
+        .attr('width', width + margins.left + margins.right + legendPanel.width)
+        .attr('height', height + margins.top + margins.bottom)
+        .append('g')
+        .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')'),
+    xMax = d3.max(dataset, function (group) {
+        return d3.max(group, function (d) {
+            return d.x + d.x0;
+        });
+    }),
+    xScale = d3.scale.linear()
+        .domain([0, xMax])
+        .range([0, width]),
+    months = dataset[0].map(function (d) {
+        return d.y;
+    }),
+    _ = console.log(months),
+    yScale = d3.scale.ordinal()
+        .domain(months)
+        .rangeRoundBands([0, height], .1),
+    xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient('bottom'),
+    yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient('left'),
+    colours = d3.scale.category10(),
+    groups = svg.selectAll('g')
+        .data(dataset)
+        .enter()
+        .append('g')
+        .style('fill', function (d, i) {
+        return colours(i);
+    }),
+    rects = groups.selectAll('rect')
+        .data(function (d) {
+        return d;
+    })
+        .enter()
+        .append('rect')
+        .attr('x', function (d) {
+        return xScale(d.x0);
+    })
+        .attr('y', function (d, i) {
+        return yScale(d.y);
+    })
+        .attr('height', function (d) {
+        return yScale.rangeBand();
+    })
+        .attr('width', function (d) {
+        return xScale(d.x);
+    })
+        .on('mouseover', function (d) {
+        var xPos = parseFloat(d3.select(this).attr('x')) / 2 + width / 2;
+        var yPos = parseFloat(d3.select(this).attr('y')) + yScale.rangeBand() / 2;
 
+        d3.select('#tooltip')
+            .style('left', xPos + 'px')
+            .style('top', yPos + 'px')
+            .select('#value')
+            .text(d.x);
 
-      var vis = d3.select('#chart').append("svg:svg").data([data]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
-      var pie = d3.layout.pie().value(function(d){return d.value;});
+        d3.select('#tooltip').classed('hidden', false);
+    })
+        .on('mouseout', function () {
+        d3.select('#tooltip').classed('hidden', true);
+    })
 
-      // declare an arc generator function
-      var arc = d3.svg.arc().outerRadius(r);
+    svg.append('g')
+        .attr('class', 'axis')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(xAxis);
 
-      // select paths, use arc generator to draw
-      var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
-      arcs.append("svg:path")
-          .attr("fill", function(d, i){
-              return color(i);
-          })
-          .attr("d", function (d) {
-              // log the result of the arc generator to show how cool it is :)
-              console.log(arc(d));
-              return arc(d);
-          });
+svg.append('g')
+    .attr('class', 'axis')
+    .call(yAxis);
 
-      // add the text
-      arcs.append("svg:text").attr("transform", function(d){
-                  d.innerRadius = 0;
-                  d.outerRadius = r;
-          return "translate(" + arc.centroid(d) + ")";}).attr("text-anchor", "middle").text( function(d, i) {
-          return data[i].label;}
-              );
-    }
+svg.append('rect')
+    .attr('fill', 'yellow')
+    .attr('width', 160)
+    .attr('height', 30 * dataset.length)
+    .attr('x', width + margins.left)
+    .attr('y', 0);
+
+series.forEach(function (s, i) {
+    svg.append('text')
+        .attr('fill', 'black')
+        .attr('x', width + margins.left + 8)
+        .attr('y', i * 24 + 24)
+        .text(s);
+    svg.append('rect')
+        .attr('fill', colours(i))
+        .attr('width', 60)
+        .attr('height', 20)
+        .attr('x', width + margins.left + 90)
+        .attr('y', i * 24 + 6);
+});
   </script>
 </body>
 </html>
