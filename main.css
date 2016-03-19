@@ -10,6 +10,7 @@ label{
   margin-left: 1em;
   margin-right: 1em;
   margin-bottom: 1em;
+  font-weight: bold;
 }
 input {
   display: inline-block;
@@ -29,3 +30,4 @@ button {
 #chart {
   margin-left: 14pm;
 }
+

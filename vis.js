@@ -10,7 +10,8 @@ function loanCalculator(){
       var m = l * ((i * a)/(a - 1));
       var total = dp + m*360;
       var interest = total - p;
-      console.log(total);
+      console.log(typeof r);
+      console.log(i);
       document.getElementById('loanMax').innerHTML= "$" + p.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + " property, with $" + l.toFixed(2) + " loan.";
       document.getElementById('monthlyMortgage').innerHTML = "$" + m.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
       document.getElementById('totalPayment').innerHTML = "$" + total.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"); 
@@ -58,4 +59,40 @@ function loanCalculator(){
           return "translate(" + arc.centroid(d) + ")";}).attr("text-anchor", "middle").text( function(d, i) {
           return data[i].label;}
               );
+    }
+
+function roiCalculator(){
+      var l = Number(document.getElementById('loan').value);
+      var r = Number(document.getElementById('rate').value);
+      console.log(typeof r);
+      console.log(r / 12);
+      var s = Number(document.getElementById('length').value);
+      var g = Number(document.getElementById('growth').value);
+      var dp = Number(document.getElementById('downPayment').value);
+      var i = r/12;
+      var a = Math.pow(1+i,360);
+      var b = Math.pow(1+i,s*12);
+      var rl = l * (a - b) / (a - 1);
+      var m = l * ((i * a)/(a - 1));
+      var p = dp + l;
+      var c = Math.pow(1+g, s);
+      var fp = p * c;
+      var payment = m*s*12;
+      var netgain = fp - rl - dp - payment;
+      var monthlyGain = netgain/(s*12);
+      console.log(r);
+      console.log(s);
+      console.log(g);
+      console.log(l);
+      console.log(i);
+      console.log(a);
+      console.log(b);
+      console.log(c);
+      console.log(p);
+      console.log(fp);
+      console.log(payment);
+      console.log(rl);
+      document.getElementById('gain').innerHTML= "$" + netgain.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+      document.getElementById('monthlyROI').innerHTML = "$" + monthlyGain.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+      document.getElementById('lengthStay').innerHTML = s;     
     }

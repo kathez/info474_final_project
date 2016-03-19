@@ -3,7 +3,6 @@
 <head>
   <title>Mortgage</title>
   <script src="http://d3js.org/d3.v3.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
   <link rel="stylesheet" type="text/css" href="main.css"/>
 </head>
 <body>
@@ -16,18 +15,32 @@
     <button type = "submit" onclick="loanCalculator()">Submit</button>
 
     <p>
-      You can afford <span id="loanMax"> ? </span>
+      You can afford <span id="loanMax">____</span>
     </p>
 
     <p>
-      Your monthly mortgage will be around <span id="monthlyMortgage"> ? </span>
+      Your monthly mortgage will be around <span id="monthlyMortgage">_____</span>
     </p>
 
     <p> 
-      After 360 months (30 years fix termed), you end up paying <span id="totalPayment"> ? </span>. 
+      After 360 months (30 years fix termed), you end up paying <span id="totalPayment"> ______</span> 
     </p>
   </div>
   <div id="chart"></div>
+
+  <div id="roi">
+    <h2>What is my net gain/loss?</h2>
+    <label>Loan </label><input type="text" name="loan" id="loan" />
+    <label>Down Payment</label><input type="text" name="downPayment" id="downPayment" />
+    <label>Interest Rate </label><input type="text" name="interest_rate" id="rate" />
+    <label>Length of Ownership (in year)</label><input type="text" name="length" id="length" />
+    <label>Estimated yearly growth rate</label><input type="text" name="growth" id="growth" />
+    <button type = "submit" onclick="roiCalculator()">Submit</button>
+
+    <p>
+      You will gain <span id="gain">____</span> total, and <span id="monthlyROI">_____</span> every month, if you sell it after <span id="lengthStay">_____</span> years 
+    </p>
+  </div>
 
   <script type="text/javascript" src="vis.js"></script>
 </body>
