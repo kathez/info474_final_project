@@ -13,10 +13,14 @@
 
   <div id="loan_calculator">
     <h2>How much loan I can get to buy a house?</h2>
-    <label>Income </label><input type="text" name="income" id="income" /> 
+    <label>Income </label><input type="text" name="income" id="income" />
+    <p>It is monthly income after tax</p>
     <label>Debt </label><input type="text" name="Debt" id="debt" />
-    <label>Interest Rate </label><input type="text" name="interest_rate" id="interest_rate" />
+    <p>Other debt you pay every month, such as car mortgage, student loan, etc. </p>
+    <label>Interest Rate</label><input type="text" name="interest_rate" id="interest_rate" />
+    <p>Common interest rate varies between 3.5% to 4.5%. If you want to test interest rate 4%, please insert 0.04.</p>
     <label>Down Payment </label><input type="text" name="downpayment" id="downpayment" />
+    <p>This is the amount of cash you have on hand that goes into down payment.</p>
     <button type = "submit" onclick="loanCalculator()">Submit</button>
 
     <p>
@@ -38,10 +42,15 @@
   <div id="roi">
     <h2>What is my net gain/loss?</h2>
     <label>Loan </label><input type="text" name="loan" id="loan" />
+    <p>You can put in the estimated loan amount from the first section. We suggest you to do the suggested loan amount if your downpayment is not more than 20% of the target price (loan + downpayment).</p>
     <label>Down Payment</label><input type="text" name="downPayment" id="downPayment" />
+    <p>This is the amount of cash you have on hand that goes into down payment.</p>
     <label>Interest Rate </label><input type="text" name="interest_rate" id="rate" />
+    <p>Common interest rate varies between 3.5% to 4.5%. If you want to test interest rate 4%, please insert 0.04.</p>
     <label>Length of Ownership (in year)</label><input type="text" name="length" id="length" />
+    <p>How long do you plan to keep this house?</p>
     <label>Estimated yearly growth rate</label><input type="text" name="growth" id="growth" />
+    <p>In Seattle, the average growth rate is around 10%. To be more conservative, try 6% or less. For example, put 0.06 for 6%. </p>
     <button type = "submit" onclick="roiCalculator()">Submit</button>
 
     <p>

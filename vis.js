@@ -24,8 +24,8 @@ function loanCalculator(){
       document.getElementById('totalPayment').innerHTML = "$" + total.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"); 
       document.getElementById('propertyTax').innerHTML = "$" + tax.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
       if(suggestedLoan < l) {
-        document.getElementById('tips').innerHTML = "Your downpayment is less than 20% of your target price, which will cause additional monthly charges called PMI (Private Mortgage Insurance) until you get to 20%. We suggest you to aim for houses priced equal or below $" +
-        suggestedTarget.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+        document.getElementById('tips').innerHTML = "NOTE: Your downpayment is less than 20% of your target price, which will cause additional monthly charges called PMI (Private Mortgage Insurance) until you get to 20%. We suggest you to aim for houses priced equal or below $" +
+        suggestedTarget.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + ". We suggest the loan amount below $" + suggestedLoan.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + " property tax every month";
       }
       drawPieChart(dp, l, interest,tax);     
     }
