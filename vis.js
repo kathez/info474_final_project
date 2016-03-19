@@ -9,16 +9,24 @@ function loanCalculator(){
       var p = l + dp;
       var m = l * ((i * a)/(a - 1));
       var total = dp + m*360;
-      var interest = total - p;
       var tax = p * 0.0101 * 30;
+      var interest = total - p;
       var mt = tax/360;
+      var suggestedLoan = dp/0.2;
+      var suggestedTarget = suggestedLoan + dp;
       console.log(typeof r);
       console.log(i);
       console.log(tax);
+      console.log(suggestedLoan);
+      
       document.getElementById('loanMax').innerHTML= "$" + p.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + " property, with $" + l.toFixed(2) + " loan";
       document.getElementById('monthlyMortgage').innerHTML = "$" + m.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + " plus $" + mt.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + " property tax every month";
       document.getElementById('totalPayment').innerHTML = "$" + total.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"); 
       document.getElementById('propertyTax').innerHTML = "$" + tax.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+      if(suggestedLoan < l) {
+        document.getElementById('tips').innerHTML = "Your downpayment is less than 20% of your target price, which will cause additional monthly charges called PMI (Private Mortgage Insurance) until you get to 20%. We suggest you to aim for houses priced equal or below $" +
+        suggestedTarget.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+      }
       drawPieChart(dp, l, interest,tax);     
     }
 
@@ -99,6 +107,10 @@ function roiCalculator(){
       document.getElementById('lengthStay').innerHTML = s; 
       document.getElementById('rent').innerHTML = "$" + rent.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
       document.getElementById('rental_length').innerHTML = s;    
+      if(dp/0.2 < p) {
+        document.getElementById('note').innerHTML = 
+          "NOTE: Your downpayment is less than 20% of your target price (loan plus downpayment), which will cause additional monthly charges called PMI (Private Mortgage Insurance) until you get to 20%. PMI rate varies between lenders, so it is not included in the calculation.";
+      }
       drawBar(dp, l, equity,interest, paidTax);
     }
 

@@ -66,3 +66,7 @@ button {
 #chart {
   margin-left: 14pm;
 }
+
+#tips, #note {
+  color: red;
+}
